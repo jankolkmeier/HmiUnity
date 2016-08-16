@@ -1,0 +1,147 @@
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+<speech id="speech1" start="3">
+<text>Hallo und willkommen.</text>
+</speech>
+<speech id="speech2" start="speech1:end+0.5">
+<text>Dies ist eine demo der Platform für artikulierte soziale Agenten.</text>
+</speech>
+</bml>
+
+
+
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0"  id="bml1">
+
+  <!-- default pose -->
+  <postureShift id="pose1">
+		<stance type="STANDING"/>
+		<pose part="LEGS" lexeme="LEGS_OPEN"/>
+  </postureShift>
+	
+  <speech id="speech0" start="pose1:end"> 
+    <text>I will now show a collection of gestures from the repertoire of Greta.</text>    
+  </speech>
+
+
+  <speech id="speech1a" start="speech0:end+4"> 
+    <text>Beat 1, right.</text>
+  </speech>
+  <gesture id="gesture1a" lexeme="greta_beat1" mode="RIGHT_HAND" start="speech1a:start"/>    
+  
+  <speech id="speech1b" start="speech1a:end+4"> 
+    <text>Beat 1, left.</text>
+  </speech>
+  <gesture id="gesture1b" lexeme="greta_beat1" mode="LEFT_HAND" start="speech1b:start"/>  
+  
+  <speech id="speech1c" start="speech1b:end+4"> 
+    <text>Beat 1, 2 hands.</text>
+  </speech>
+  <gesture id="gesture1c" lexeme="greta_beat1" mode="BOTH_HANDS" start="speech1c:start"/>   
+ 
+ 
+  <speech id="speech2a" start="speech1c:end+4"> 
+    <text>Beat 2, right.</text>
+  </speech>
+  <gesture id="gesture2a" lexeme="greta_beat2" mode="RIGHT_HAND" start="speech2a:start"/>  
+
+  <speech id="speech2b" start="speech2a:end+4"> 
+    <text>Beat 2, left.</text>
+  </speech>
+  <gesture id="gesture2b" lexeme="greta_beat2" mode="LEFT_HAND" start="speech2b:start"/>  
+
+  <speech id="speech2c" start="speech2b:end+4"> 
+    <text>Beat 2, 2 hands.</text>
+  </speech>
+  <gesture id="gesture2c" lexeme="greta_beat2" mode="BOTH_HANDS" start="speech2c:start"/>  
+  
+  <speech id="speech3a" start="speech2c:end+4"> 
+    <text>Beat 3, right.</text>
+  </speech>
+  <gesture id="gesture3a" lexeme="greta_beat3" mode="RIGHT_HAND" start="speech3a:start"/>  
+  
+  <speech id="speech3b" start="speech3a:end+4"> 
+    <text>Beat 3, left.</text>
+  </speech>
+  <gesture id="gesture3b" lexeme="greta_beat3" mode="LEFT_HAND" start="speech3b:start"/>  
+  
+  <speech id="speech3c" start="speech3b:end+4"> 
+    <text>Beat 3, 2 hands.</text>
+  </speech>
+  <gesture id="gesture3c" lexeme="greta_beat3" mode="BOTH_HANDS" start="speech3c:start"/>  
+  
+  <speech id="speech4a" start="speech3c:end+4"> 
+    <text>Beat 4, right.</text>
+  </speech>
+  <gesture id="gesture4a" lexeme="greta_beat4" mode="RIGHT_HAND" start="speech4a:start"/>  
+  
+  <speech id="speech4b" start="speech4a:end+4"> 
+    <text>Beat 4, left.</text>
+  </speech>
+  <gesture id="gesture4b" lexeme="greta_beat4" mode="LEFT_HAND" start="speech4b:start"/>  
+  
+  <speech id="speech4c" start="speech4b:end+4"> 
+    <text>Beat 4, 2 hands.</text>
+  </speech>
+  <gesture id="gesture4c" lexeme="greta_beat4" mode="BOTH_HANDS" start="speech4c:start"/>  
+  
+  <speech id="speech5a" start="speech4c:end+4"> 
+    <text>Refuse.</text>	
+  </speech>
+  <gesture id="gesture5a" lexeme="greta_refuse" mode="RIGHT_HAND" start="speech5a:start"/>  
+  	
+  <speech id="speech6a" start="speech5a:end+4"> 
+    <text>One.</text>
+  </speech>
+  <gesture id="gesture6a" lexeme="greta_one" mode="RIGHT_HAND" start="speech6a:start"/>  
+  		
+  <speech id="speech7a" start="speech6a:end+4"> 
+    <text>Deictic self.</text>
+  </speech>
+  <gesture id="gesture7a" lexeme="greta_deictic_self" mode="LEFT_HAND" start="speech7a:start"/>    		
+</bml>
+
+
+
+
+
+<bml  xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml1">
+  <speech  id="speech1" start="2">
+  	<text>This is the first chunk<sync id="chunk"/></text>
+  </speech>
+  <gesture id="g1" lexeme="BEAT" mode="BOTH_HANDS" stroke="speech1:chunk"/>
+</bml>
+<bml xmlns:bmla="http://www.asap-project.org/bmla" xmlns="http://www.bml-initiative.org/bml/bml-1.0" id="bml2" bmla:chunkAfter="bml1">
+	<speech id="speech1"> 
+  	<text><sync id="this"/>This is the second chunk.</text>
+  </speech>
+  <gesture id="g1" stroke="speech1:this" mode="LEFT_HAND" lexeme="BEAT"/>
+</bml>
+
+
+<!--
+Pose switch
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0"  id="bml1" xmlns:bmlt="http://hmi.ewi.utwente.nl/bmlt">
+	<postureShift id="pose1" start="3">
+		<stance type="STANDING"/>
+		<pose part="ARMS" lexeme="ARMS_FORWARD"/>
+	</postureShift>		
+	
+	<postureShift id="pose2" start="6">
+		<stance type="STANDING"/>
+		<pose part="ARMS" lexeme="ARMS_SPREAD"/>
+	</postureShift>
+</bml>
+
+
+
+
+<!-- 
+Example script controlling the face using lexicalized expressions .
+See the facebinding.xml for the mapping of lexemes to FACS configurations, morph targets, or locations in Plutchik's emotion wheel.
+-->
+<bml xmlns="http://www.bml-initiative.org/bml/bml-1.0"  id="bml1">
+  <faceLexeme id="f1" start="0" end="4" lexeme="think" amount="1"/>
+  <faceLexeme id="f2" start="5" end="9" lexeme="anger" amount="1"/>
+  <faceLexeme id="f3" start="10" end="14" lexeme="sadness" amount="1"/>
+  <faceLexeme id="f4" start="15" end="19" lexeme="surprise" amount="1"/>  
+</bml>

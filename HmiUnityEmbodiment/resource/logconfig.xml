@@ -1,0 +1,25 @@
+<configuration debug="true">
+	<appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+     </pattern>
+    </encoder>
+  </appender>
+
+  <root level="WARN">
+    <appender-ref ref="STDOUT" />
+  </root>
+  
+  <logger name="hmi.unityembodiments" level="INFO"/>
+  <logger name="hmi.faceanimation.converters" level="INFO"/>
+  <logger name="asap.faceengine.faceunit" level="INFO"/>
+  <logger name="nl.utwente" level="INFO"/>
+  <logger name="asap.walleengine" level="WARN"/>
+  <logger name="hmmm" level="INFO"/>
+  <logger name="hmi.flipper" level="INFO"/>
+  <logger name="hmmm.FlipperISVisualiser" level="WARN"/>
+  <!--  logger name="asap.bml.requests" level="DEBUG"/ -->
+  
+</configuration>
