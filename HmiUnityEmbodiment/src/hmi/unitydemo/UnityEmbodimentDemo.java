@@ -12,36 +12,48 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import asap.bml.ext.bmlt.BMLTInfo;
 import asap.environment.AsapEnvironment;
-import hmi.environmentbase.ClockDrivenCopyEnvironment;
-
+import hmi.animation.VJoint;
 import hmi.audioenvironment.AudioEnvironment;
+import hmi.environmentbase.ClockDrivenCopyEnvironment;
 import hmi.environmentbase.Environment;
-import hmi.faceanimation.converters.FACS2MorphConverter;
 import hmi.jcomponentenvironment.JComponentEnvironment;
 import hmi.mixedanimationenvironment.MixedAnimationEnvironment;
 import hmi.physicsenvironment.OdePhysicsEnvironment;
-import hmi.unityembodiments.UnityEmbodiment;
+import hmi.worldobjectenvironment.VJointWorldObject;
 import hmi.worldobjectenvironment.WorldObjectEnvironment;
-import lombok.extern.slf4j.Slf4j;;
+import lombok.extern.slf4j.Slf4j;
+import saiba.bml.BMLInfo;
+import saiba.bml.core.FaceLexemeBehaviour;
+import saiba.bml.core.HeadBehaviour;
+import saiba.bml.core.PostureShiftBehaviour;;
 
 @Slf4j
-public class UnityEmbodimentDemo {
-    
+public class UnityEmbodimentDemo
+{
 
     protected static JFrame mainJFrame = new JFrame("AsapRealizer demo");
-    
-    public UnityEmbodimentDemo() {
+
+    public UnityEmbodimentDemo()
+    {
     }
-    
-    public static void main(String[] args) throws IOException {
-    	MixedAnimationEnvironment mae = new MixedAnimationEnvironment();
+
+    public static void main(String[] args) throws IOException
+    {
+        MixedAnimationEnvironment mae = new MixedAnimationEnvironment();
         final OdePhysicsEnvironment ope = new OdePhysicsEnvironment();
         WorldObjectEnvironment we = new WorldObjectEnvironment();
         AudioEnvironment aue = new AudioEnvironment("LJWGL_JOAL");
 
+        BMLTInfo.init();
+        BMLInfo.addCustomFloatAttribute(FaceLexemeBehaviour.class, "http://asap-project.org/convanim", "repetition");
+        BMLInfo.addCustomStringAttribute(HeadBehaviour.class, "http://asap-project.org/convanim", "spindirection");
+        BMLInfo.addCustomFloatAttribute(PostureShiftBehaviour.class, "http://asap-project.org/convanim", "amount");
+
         ArrayList<Environment> environments = new ArrayList<Environment>();
         final JComponentEnvironment jce = setupJComponentEnvironment();
+        final AsapEnvironment ee = new AsapEnvironment();
         ClockDrivenCopyEnvironment ce = new ClockDrivenCopyEnvironment(1000 / 30);
 
         ce.init();
@@ -49,6 +61,7 @@ public class UnityEmbodimentDemo {
         mae.init(ope, 0.002f);
         we.init();
         aue.init();
+        environments.add(ee);
         environments.add(ope);
         environments.add(mae);
         environments.add(we);
@@ -56,16 +69,17 @@ public class UnityEmbodimentDemo {
         environments.add(ce);
         environments.add(jce);
         environments.add(aue);
-        
-        final AsapEnvironment ee = new AsapEnvironment();
-        environments.add(ee);
+
         ee.init(environments, ope.getPhysicsClock());
         ope.addPrePhysicsCopyListener(ee);
-        
+
         String spec = "unity_agentspec.xml";
         ee.loadVirtualHuman("", spec, "AsapRealizer demo");
-        //AsapVirtualHuman avh = new AsapVirtualHuman();
+        // AsapVirtualHuman avh = new AsapVirtualHuman();
 
+        VJoint boxJoint = new VJoint();
+        boxJoint.setTranslation(0.1f, 1.5f, 0.4f);
+        we.getWorldObjectManager().addWorldObject("bluebox", new VJointWorldObject(boxJoint));
 
         ope.startPhysicsClock();
 
@@ -78,8 +92,9 @@ public class UnityEmbodimentDemo {
         });
 
         mainJFrame.setSize(1000, 600);
-        mainJFrame.setVisible(true);   
+        mainJFrame.setVisible(true);
     }
+
     private static JComponentEnvironment setupJComponentEnvironment()
     {
         final JComponentEnvironment jce = new JComponentEnvironment();

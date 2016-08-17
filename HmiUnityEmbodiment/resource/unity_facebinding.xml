@@ -1,4 +1,49 @@
-<facebinding> 
+<facebinding> 	
+	<FaceUnitSpec type="faceLexeme">
+		<constraints>
+			<constraint name="lexeme" value="REPEATED_BLINK"/>
+		</constraints>
+		<parametermap>
+			<parameter src="amount" dst="intensity"/>
+			<parameter src="http://asap-project.org/convanim:repetition" dst="repeats"/>
+		</parametermap>
+		<parameterdefaults>
+			<parameterdefault name="targetname" value="FACS_AU_45"/>			
+			<parameterdefault name="intensity" value="1"/>
+			<parameterdefault name="repeats" value="2"/>
+		</parameterdefaults>
+		<FaceUnit type="class" class="asap.realizerdemo.newanimations.SinusWaveFU"/>
+	</FaceUnitSpec>	
+	
+	<FaceUnitSpec type="faceLexeme">
+		<constraints>
+			<constraint name="lexeme" value="blink"/>
+		</constraints>
+		<parametermap>
+			<parameter src="amount" dst="intensity"/>
+		</parametermap>
+		<parameterdefaults>
+			<parameterdefault name="intensity" value="1"/>
+			<parameterdefault name="targetname" value="FACS_AU_45"/>			
+		</parameterdefaults>
+		<FaceUnit type="Morph"/>
+	</FaceUnitSpec>	
+	
+	
+	<FaceUnitSpec type="faceLexeme">
+       <constraints>
+               <constraint name="lexeme" value="BLINK"/>
+       </constraints>
+       <parametermap>
+               <parameter src="amount" dst="intensity"/>
+       </parametermap>
+       <parameterdefaults>
+               <parameterdefault name="intensity" value="1"/>
+               <parameterdefault name="targetname" value="FACS_AU_45"/>
+       </parameterdefaults>
+       <FaceUnit type="Morph"/>
+    </FaceUnitSpec>  	
+
 	<FaceUnitSpec type="faceFacs"  namespace="http://www.bml-initiative.org/bml/coreextensions-1.0">
 		<constraints>			
 		</constraints>
