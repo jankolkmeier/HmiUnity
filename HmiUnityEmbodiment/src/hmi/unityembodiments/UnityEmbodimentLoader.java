@@ -69,22 +69,20 @@ public class UnityEmbodimentLoader implements EmbodimentLoader
             tokenizer.takeETag("MiddlewareProperty");
         }
 
-        ue = new UnityEmbodiment(vhId, loaderId, loaderclass, props);
-        ue.RequestAgent(vhId, "/scene");
-
-        while (!ue.isConfigured())
-        {
+        ue = new UnityEmbodiment(vhId, loaderId, loaderclass, props, woe, ce);
+        while (!ue.isConfigured()) {
+            ue.RequestAgent(vhId, "/scene");
             try
             {
-                Thread.sleep(50);
+                Thread.sleep(500);
             }
-            catch (InterruptedException e)
+            catch (InterruptedException e1)
             {
-                log.info("Interrupted waiting for skel def: ", e);
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
             }
         }
         
-        ce.addCopyEmbodiment(ue);
         tokenizer.takeETag("MiddlewareOptions");
     }
 

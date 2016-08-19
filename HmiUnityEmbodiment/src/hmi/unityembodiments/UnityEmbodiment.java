@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import hmi.animation.VJoint;
 import hmi.animationembodiments.SkeletonEmbodiment;
@@ -28,6 +30,9 @@ import hmi.faceanimation.model.MPEG4Configuration;
 import hmi.faceembodiments.AUConfig;
 import hmi.faceembodiments.FACSFaceEmbodiment;
 import hmi.faceembodiments.FaceEmbodiment;
+import hmi.worldobjectenvironment.VJointWorldObject;
+import hmi.worldobjectenvironment.WorldObject;
+import hmi.worldobjectenvironment.WorldObjectEnvironment;
 import lombok.extern.slf4j.Slf4j;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -47,6 +52,8 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 	public static final byte MSG_TYPE_AGENT_STATE = 0x03;
 	
 	public static final String JSON_MSG_BINARY = "binaryMessage";
+    public static final String JSON_MSG_WORLDUPDATE = "worldUpdate";
+    public static final String JSON_MSG_WORLDUPDATE_CONTENT = "objects";
 	public static final String JSON_MSG_BINARY_CONTENT = "content";
 	
 	byte[] msgbuf;
@@ -63,12 +70,18 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
     //Connection connection;
 
     private LinkedHashMap<String,Float> faceMorphTargets;
+    private LinkedBlockingQueue<WorldObjectUpdate> objectUpdates;
+
+    private WorldObjectEnvironment woe;
     
-    public UnityEmbodiment(String vhId, String loaderId, String specificMiddlewareLoader, Properties props) {
+    public UnityEmbodiment(String vhId, String loaderId, String specificMiddlewareLoader, Properties props, WorldObjectEnvironment woe, CopyEnvironment ce) {
 		this.vhId = vhId;
 		this.loaderId = loaderId;
+		this.woe = woe;
+		this.ce = ce;
     	msgbuf = new byte[32768]; // Buffer: ~100bones * (4bytes * (3pos + 4rot) + 255) = ~28300
-		
+    	objectUpdates = new LinkedBlockingQueue<WorldObjectUpdate>();
+		        
         GenericMiddlewareLoader gml = new GenericMiddlewareLoader(specificMiddlewareLoader, props);
         middleware = gml.load();
         middleware.addListener(this);
@@ -78,7 +91,7 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
     public boolean isConfigured() {
     	return configured;
     }
-
+    
     public void RequestAgent(String id, String source) {
     	log.info("Req: "+id);
     	ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -120,9 +133,8 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 
 
 	@Override
-	public void receiveData(JsonNode jn) {
+	public synchronized void receiveData(JsonNode jn) {
 		if (jn.has(JSON_MSG_BINARY)) {
-			System.out.print("Binary MSG!");
 			byte[] bytes = Base64.decode(jn.get(JSON_MSG_BINARY).get(JSON_MSG_BINARY_CONTENT).asText());
 			ByteBuffer reader = ByteBuffer.wrap(bytes);
 			reader.order(ByteOrder.LITTLE_ENDIAN);
@@ -131,9 +143,39 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 			if (msgType == MSG_TYPE_AGENT_SPEC) {
 				ParseAgentSpec(reader);
 			}
+		} else if (jn.has(JSON_MSG_WORLDUPDATE)) {
+		    JsonNode objects = jn.get(JSON_MSG_WORLDUPDATE).get(JSON_MSG_WORLDUPDATE_CONTENT);
+		    Iterator<String> objectNames = objects.fieldNames();
+		    while (objectNames.hasNext()) {
+		        String objectName = objectNames.next();
+                byte[] bytes = Base64.decode(objects.get(objectName).asText());
+                float[] translation = ParseBinaryWorldObjectData(bytes);
+                try
+                {
+                    objectUpdates.put(new WorldObjectUpdate(objectName, translation));
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+		    }
 		}
 	}
-	
+    
+    float[] ParseBinaryWorldObjectData(byte[] bytes) {
+        ByteBuffer reader = ByteBuffer.wrap(bytes);
+        reader.order(ByteOrder.LITTLE_ENDIAN);
+        float x = reader.getFloat();
+        float y = reader.getFloat();
+        float z = reader.getFloat();
+        float qw = reader.getFloat();
+        float qx = reader.getFloat();
+        float qy = reader.getFloat();
+        float qz = reader.getFloat();
+        
+        return new float[] { x, y, z };
+    }
+    
 	void ParseAgentSpec(ByteBuffer reader) {
 		faceMorphTargets = new LinkedHashMap<String,Float>();
 		
@@ -187,6 +229,7 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 			log.info(String.format("    Face Target: %s\n", cName));
 		}
 		configured = true;
+        ce.addCopyEmbodiment(this);
 	}
 	
 	public VJoint getAnimationVJoint() {
@@ -195,6 +238,20 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 	
 	@Override
 	public void copy() {
+	    while (!objectUpdates.isEmpty()) {
+	        // TODO: Is poll() better than take() here? If take() blocks the copy() 
+	        //   until we receive an object update, that might really affect framerate, no?
+	        WorldObjectUpdate u = objectUpdates.poll();
+	        WorldObject o = woe.getWorldObjectManager().getWorldObject(u.id); 
+	        if (o == null) {
+	            VJoint newJoint = new VJoint();
+	            newJoint.setTranslation(u.data);
+	            woe.getWorldObjectManager().addWorldObject(u.id, new VJointWorldObject(newJoint));
+	        } else {
+	            o.setTranslation(u.data);
+	        }
+	    }
+	    
 		ByteBuffer out = ByteBuffer.wrap(msgbuf);
 		out.order(ByteOrder.LITTLE_ENDIAN);
 		out.rewind();
@@ -320,5 +377,4 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 		return loaderId;
 	}
 	
-
 }

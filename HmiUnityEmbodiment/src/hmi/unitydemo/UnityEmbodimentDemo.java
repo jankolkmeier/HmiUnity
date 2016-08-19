@@ -14,14 +14,12 @@ import javax.swing.SwingUtilities;
 
 import asap.bml.ext.bmlt.BMLTInfo;
 import asap.environment.AsapEnvironment;
-import hmi.animation.VJoint;
 import hmi.audioenvironment.AudioEnvironment;
 import hmi.environmentbase.ClockDrivenCopyEnvironment;
 import hmi.environmentbase.Environment;
 import hmi.jcomponentenvironment.JComponentEnvironment;
 import hmi.mixedanimationenvironment.MixedAnimationEnvironment;
 import hmi.physicsenvironment.OdePhysicsEnvironment;
-import hmi.worldobjectenvironment.VJointWorldObject;
 import hmi.worldobjectenvironment.WorldObjectEnvironment;
 import lombok.extern.slf4j.Slf4j;
 import saiba.bml.BMLInfo;
@@ -54,7 +52,8 @@ public class UnityEmbodimentDemo
         ArrayList<Environment> environments = new ArrayList<Environment>();
         final JComponentEnvironment jce = setupJComponentEnvironment();
         final AsapEnvironment ee = new AsapEnvironment();
-        ClockDrivenCopyEnvironment ce = new ClockDrivenCopyEnvironment(1000 / 30);
+        
+        ClockDrivenCopyEnvironment ce = new ClockDrivenCopyEnvironment(1000 / 60);
 
         ce.init();
         ope.init();
@@ -75,11 +74,6 @@ public class UnityEmbodimentDemo
 
         String spec = "unity_agentspec.xml";
         ee.loadVirtualHuman("", spec, "AsapRealizer demo");
-        // AsapVirtualHuman avh = new AsapVirtualHuman();
-
-        VJoint boxJoint = new VJoint();
-        boxJoint.setTranslation(0.1f, 1.5f, 0.4f);
-        we.getWorldObjectManager().addWorldObject("bluebox", new VJointWorldObject(boxJoint));
 
         ope.startPhysicsClock();
 
