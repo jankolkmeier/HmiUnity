@@ -67,7 +67,7 @@ public class UnityEmbodimentDemoNoGUI
         ee.init(environments, ope.getPhysicsClock());
         ope.addPrePhysicsCopyListener(ee);
 
-        String spec = "unity_agentspec_nogui_armandia.xml";
+        String spec = "unity_agentspec_nogui_uma.xml";
         ee.loadVirtualHuman("", spec, "AsapRealizer demo");
 
         ope.startPhysicsClock();
