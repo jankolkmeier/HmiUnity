@@ -28,12 +28,9 @@ import saiba.bml.core.HeadBehaviour;
 import saiba.bml.core.PostureShiftBehaviour;;
 
 @Slf4j
-public class UnityEmbodimentDemo
+public class UnityEmbodimentDemoNoGUI
 {
-
-    protected static JFrame mainJFrame = new JFrame("AsapRealizer demo");
-
-    public UnityEmbodimentDemo()
+    public UnityEmbodimentDemoNoGUI()
     {
     }
 
@@ -50,7 +47,6 @@ public class UnityEmbodimentDemo
         BMLInfo.addCustomFloatAttribute(PostureShiftBehaviour.class, "http://asap-project.org/convanim", "amount");
 
         ArrayList<Environment> environments = new ArrayList<Environment>();
-        final JComponentEnvironment jce = setupJComponentEnvironment();
         final AsapEnvironment ee = new AsapEnvironment();
         
         ClockDrivenCopyEnvironment ce = new ClockDrivenCopyEnvironment(1000 / 60);
@@ -66,52 +62,14 @@ public class UnityEmbodimentDemo
         environments.add(we);
 
         environments.add(ce);
-        environments.add(jce);
         environments.add(aue);
 
         ee.init(environments, ope.getPhysicsClock());
         ope.addPrePhysicsCopyListener(ee);
 
-        String spec = "unity_agentspec_uma.xml";
+        String spec = "unity_agentspec_nogui_armandia.xml";
         ee.loadVirtualHuman("", spec, "AsapRealizer demo");
 
         ope.startPhysicsClock();
-
-        mainJFrame.addWindowListener(new java.awt.event.WindowAdapter()
-        {
-            public void windowClosing(WindowEvent winEvt)
-            {
-                System.exit(0);
-            }
-        });
-
-        mainJFrame.setSize(1000, 600);
-        mainJFrame.setVisible(true);
-    }
-
-    private static JComponentEnvironment setupJComponentEnvironment()
-    {
-        final JComponentEnvironment jce = new JComponentEnvironment();
-        try
-        {
-            SwingUtilities.invokeAndWait(() -> {
-                mainJFrame.setLayout(new BorderLayout());
-
-                JPanel jPanel = new JPanel();
-                jPanel.setPreferredSize(new Dimension(400, 40));
-                jPanel.setLayout(new GridLayout(1, 1));
-                jce.registerComponent("textpanel", jPanel);
-                mainJFrame.add(jPanel, BorderLayout.SOUTH);
-            });
-        }
-        catch (InvocationTargetException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
-        return jce;
     }
 }

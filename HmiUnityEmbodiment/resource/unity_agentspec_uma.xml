@@ -1,4 +1,4 @@
-<AsapVirtualHuman id="Blueguy">
+<AsapVirtualHuman id="UMA">
   <Loader id="realizer" loader="asap.realizerembodiments.AsapRealizerEmbodiment">
     <BMLParser>
       <BMLAttributeExtension class="asap.bml.ext.bmla.BMLABMLBehaviorAttributes"/>      
@@ -47,17 +47,17 @@
               requiredloaders="mixedskeletonembodiment">
     <MixedSystems> 
       <MixedSystem name="lowerbody"            
-                   resources="" 
-                   filename="mixedsystems/blueguylowerbody.xml"/>
+                   resources="Humanoids/armandia/mixedsystems/" 
+                   filename="armandialowerbody.xml"/>
       <MixedSystem name="lowerbodyandleftarm"  
-                   resources="" 
-                   filename="mixedsystems/blueguylowerbodyandleftarm.xml"/>
+                   resources="Humanoids/armandia/mixedsystems/" 
+                   filename="armandialowerbodyandleftarm.xml"/>
       <MixedSystem name="lowerbodyandrightarm" 
-                   resources="" 
-                   filename="mixedsystems/blueguylowerbodyandrightarm.xml"/>
+                   resources="Humanoids/armandia/mixedsystems/" 
+                   filename="armandialowerbodyandrightarm.xml"/>
       <MixedSystem name="lowerbodyandarms"     
-                   resources="" 
-                   filename="mixedsystems/blueguylowerbodyarms.xml"/>
+                   resources="Humanoids/armandia/mixedsystems/" 
+                   filename="armandialowerbodyarms.xml"/>
     </MixedSystems>
     <GlueFeetToFloor/>
   </Loader>
@@ -75,19 +75,37 @@
     <GestureBinding basedir="" resources="" filename="unity_gesturebinding.xml"/>
   
     <StartPose>
-      <RestPose type="SkeletonPose" file="unity_restpose_default.xml"/>
+      <RestPose type="SkeletonPose" file="unity_restpose_uma.xml"/>
     </StartPose>
 	
 	<Hns resources="Humanoids/armandia/hns" filename="hns_armandia.xml"/>
     <HnsHandShape dir="Humanoids/shared/handshapes"/>
   </Loader>
   
+  <Loader id="faceengine" 
+          loader="asap.faceengine.loader.FaceEngineLoader"
+          requiredloaders="unityembodiment">
+    <FaceBinding basedir="" resources=""  filename="unity_facebinding.xml" facs2morphmappingresources="" facs2morphmappingfilename="unity_facs2morphmapping.xml"/>
+  </Loader>
   
+  <Loader id="facelipsync" requiredloaders="faceengine" loader="asap.faceengine.loader.TimedFaceUnitLipSynchProviderLoader">
+	<MorphVisemeBinding filename="unity_visemebinding.xml"/>
+  </Loader>
+
+  <!--
+  <Loader id="visualprosody" loader="asap.animationengine.loader.HeadVisualProsodyProviderLoader" requiredloaders="animationengine">
+	<?include resources="" file="visualprosodyprovider.xml"?>
+  </Loader>
+-->
+
+
   <Loader id="ttsbinding" loader="asap.marytts5binding.loader.MaryTTSBindingLoader">
     <PhonemeToVisemeMapping resources="Humanoids/shared/phoneme2viseme/" filename="sampade2ikp.xml"/>
   </Loader>
   
- <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="ttsbinding,guiembodiment">
+  
+<!-- visualprosody, -->
+ <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding,guiembodiment">
    <Voice factory="WAV_TTS" voicename="dfki-prudence-hsmm" />
    <SpeechUI/>
   </Loader>
@@ -98,6 +116,12 @@
     <EmitterInfo class="asap.breathingemitter.BreathingEmitterInfo"/>
   </Loader>
 
+  <!-- Blinkemitter that sens small blink animations every now and then -->
+  <Loader id="blinkengine" 
+          loader="asap.emitterengine.loader.EmitterEngineLoader">
+    <EmitterInfo class="asap.blinkemitter.BlinkEmitterInfo"/>
+  </Loader>
+  
   <!-- Engine for playing audio files, nice for sound effects (e.g., clapping) or for prerecorded speech fragments -->
   <Loader id="audioengine" loader="asap.audioengine.loader.AudioEngineLoader"/>
 

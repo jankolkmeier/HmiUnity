@@ -193,6 +193,7 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 		for (int b = 0; b < skBones; b++) {
 			String bName = ParseString(reader);
 			String pName = ParseString(reader);
+            String hAnimName = ParseString(reader);
 			
 			float x = reader.getFloat();
 			float y = reader.getFloat();
@@ -203,8 +204,8 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 			float qz = reader.getFloat();
 			VJoint current = new VJoint();
 			current.setName(bName);
-			current.setSid(bName);
-			current.setId(bName);
+			current.setSid(hAnimName);
+			current.setId(bName); // could be prefixed by vhId to be "truly" unique?
 			current.setTranslation(x, y, z);
 			current.setRotation(qw, qx, qy, qz);
 			
@@ -216,7 +217,7 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 			
 			jointList.add(current);
 			jointsLUT.put(bName, current);
-			log.info(String.format("    Bone %s, child of %s. [%.2f %.2f %.2f] [%.2f %.2f %.2f %.2f]\n", bName, pName, x,y,z,qw,qx,qy,qz));
+			log.info(String.format("    Bone %s, child of %s. HAnim: %s // [%.2f %.2f %.2f] [%.2f %.2f %.2f %.2f]", bName, pName, hAnimName, x,y,z,qw,qx,qy,qz));
 		}
 		
 
@@ -237,7 +238,7 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
     }
 	
 	@Override
-	public void copy() {
+	public synchronized void copy() {
 	    while (!objectUpdates.isEmpty()) {
 	        // TODO: Is poll() better than take() here? If take() blocks the copy() 
 	        //   until we receive an object update, that might really affect framerate, no?
