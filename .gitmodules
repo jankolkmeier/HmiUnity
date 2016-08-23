@@ -1,3 +1,3 @@
 [submodule "Unity/BlankAsapUnity/Assets/UnityAsapIntegration"]
 	path = Unity/BlankAsapUnity/Assets/UnityAsapIntegration
-	url = git@github.com:jankolkmeier/UnityAsapIntegration.git
+	url = https://github.com/jankolkmeier/UnityAsapIntegration.git
