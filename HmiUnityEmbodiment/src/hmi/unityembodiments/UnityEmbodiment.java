@@ -223,14 +223,15 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 
 		int fTargets = reader.getInt(); // INT32  BONES#
 
-		log.info("Face Targets: %d\n", fTargets);
+		log.info("Face Targets: "+fTargets);
+        //ce.addCopyEmbodiment(this);
+		
 		for (int f = 0; f < fTargets; f++) {
 			String cName = ParseString(reader);
 			faceMorphTargets.put(cName, 0.0f);
-			log.info(String.format("    Face Target: %s\n", cName));
+			log.info(String.format("    Face Target: %s", cName));
 		}
 		configured = true;
-        ce.addCopyEmbodiment(this);
 	}
 	
 	public VJoint getAnimationVJoint() {
@@ -239,7 +240,9 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 	
 	@Override
 	public synchronized void copy() {
-	    while (!objectUpdates.isEmpty()) {
+		if (!configured) return;
+	    log.info("copying ");
+		while (!objectUpdates.isEmpty()) {
 	        // TODO: Is poll() better than take() here? If take() blocks the copy() 
 	        //   until we receive an object update, that might really affect framerate, no?
 	        WorldObjectUpdate u = objectUpdates.poll();
@@ -290,7 +293,7 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 				object(JSON_MSG_BINARY_CONTENT, Base64.encode(Arrays.copyOf(out.array(), out.position())))
 			).end();
 		middleware.sendData(value);
-		
+		log.info("copied ");
     	//connection.send(msg, "/topic/UnityAgentControl");
 	}
 	
