@@ -3,7 +3,7 @@
     class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
       <pattern>
-        %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+        [%thread] %-5level %logger{36} - %msg%n
      </pattern>
     </encoder>
   </appender>
@@ -20,6 +20,7 @@
   <logger name="hmmm" level="INFO"/>
   <logger name="hmi.flipper" level="INFO"/>
   <logger name="hmmm.FlipperISVisualiser" level="WARN"/>
+  <logger name="nl.utwente.hmi.middleware" level="WARN" />
   <!--  logger name="asap.bml.requests" level="DEBUG"/ -->
   
 </configuration>
