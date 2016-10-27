@@ -1,0 +1,62 @@
+<AsapVirtualHuman id="CleVR">
+  <Loader id="realizer" loader="asap.realizerembodiments.AsapRealizerEmbodiment">
+    <BMLParser>
+      <BMLAttributeExtension class="asap.bml.ext.bmla.BMLABMLBehaviorAttributes"/>      
+    </BMLParser>
+	
+    <BMLScheduler>
+      <SchedulingHandler class="asap.realizer.scheduler.BMLASchedulingHandler" schedulingStrategy="asap.realizer.scheduler.SortedSmartBodySchedulingStrategy"/>
+    </BMLScheduler>
+    <PipeLoader id="visualizerpipe" loader="asap.bmlflowvisualizer.loader.AsapBMLFlowVisualizerPortLoader"/>
+     <PipeLoader id="pipe" loader="asap.middlewareadapters.loader.MiddlewareToBMLRealizerAdapterLoader">
+		  <MiddlewareOptions loaderclass="nl.utwente.hmi.middleware.stomp.STOMPMiddlewareLoader">
+		    <MiddlewareProperty name="apolloIP" value="127.0.0.1"/>
+		    <MiddlewareProperty name="apolloPort" value="61613"/>
+            <MiddlewareProperty name="iTopic" value="/topic/bmlRequests"/>
+            <MiddlewareProperty name="oTopic" value="/topic/bmlFeedback"/>
+          </MiddlewareOptions>
+	  </PipeLoader>
+    
+  </Loader>
+  
+  <Loader id="guiembodiment" loader="asap.realizerembodiments.JFrameEmbodiment">
+    <BmlUI demoscriptresources="clevr/testbml"/>
+    <FeedbackUI/>    
+    <!--KillButton/-->
+  </Loader>
+  
+  <Loader id="unityembodiment" loader="hmi.unityembodiments.UnityEmbodimentLoader">
+    <MiddlewareOptions loaderclass="nl.utwente.hmi.middleware.stomp.STOMPMiddlewareLoader">
+      <MiddlewareProperty name="apolloIP" value="127.0.0.1"/>
+      <MiddlewareProperty name="apolloPort" value="61613"/>
+      <MiddlewareProperty name="iTopic" value="/topic/UnityAgentFeedback"/>
+      <MiddlewareProperty name="oTopic" value="/topic/UnityAgentControl"/>
+    </MiddlewareOptions>
+  </Loader>
+   
+  <Loader id="faceengine" 
+          loader="asap.faceengine.loader.FaceEngineLoader"
+          requiredloaders="unityembodiment">
+    <FaceBinding basedir="" resources="clevr" filename="facebinding.xml" facs2morphmappingresources="clevr" facs2morphmappingfilename="facs2morphmapping.xml"/>
+  </Loader>
+  
+  <Loader id="facelipsync" requiredloaders="faceengine" loader="asap.faceengine.loader.TimedFaceUnitLipSynchProviderLoader">
+	<MorphVisemeBinding resources="clevr" filename="visemebinding.xml"/>
+  </Loader>
+  
+  
+  <Loader id="ttsbinding" loader="asap.marytts5binding.loader.MaryTTSBindingLoader">
+    <PhonemeToVisemeMapping resources="Humanoids/shared/phoneme2viseme/" filename="sampade2ikp.xml"/>
+  </Loader>
+  
+  <Loader id="blinkengine" 
+          loader="asap.emitterengine.loader.EmitterEngineLoader">
+    <EmitterInfo class="asap.blinkemitter.BlinkEmitterInfo"/>
+  </Loader>
+  
+ <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding,guiembodiment">
+   <Voice factory="WAV_TTS" voicename="dfki-prudence-hsmm" />
+   <SpeechUI/>
+  </Loader>
+  
+</AsapVirtualHuman>
