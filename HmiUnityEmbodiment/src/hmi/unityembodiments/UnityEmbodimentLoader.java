@@ -71,7 +71,7 @@ public class UnityEmbodimentLoader implements EmbodimentLoader
 
         ue = new UnityEmbodiment(vhId, loaderId, loaderclass, props, woe, ce);
         while (!ue.isConfigured()) {
-            ue.RequestAgent(vhId, "/scene");
+            ue.SendAgentSpecRequest(vhId, "/scene");
             try
             {
                 Thread.sleep(500);
@@ -85,7 +85,9 @@ public class UnityEmbodimentLoader implements EmbodimentLoader
         
         tokenizer.takeETag("MiddlewareOptions");
     }
+    
 
+    
     @Override
     public void unload()
     {

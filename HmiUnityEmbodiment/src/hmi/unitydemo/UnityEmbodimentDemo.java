@@ -20,14 +20,13 @@ import hmi.environmentbase.Environment;
 import hmi.jcomponentenvironment.JComponentEnvironment;
 import hmi.mixedanimationenvironment.MixedAnimationEnvironment;
 import hmi.physicsenvironment.OdePhysicsEnvironment;
+import hmi.util.Console;
 import hmi.worldobjectenvironment.WorldObjectEnvironment;
-import lombok.extern.slf4j.Slf4j;
 import saiba.bml.BMLInfo;
 import saiba.bml.core.FaceLexemeBehaviour;
 import saiba.bml.core.HeadBehaviour;
 import saiba.bml.core.PostureShiftBehaviour;;
 
-@Slf4j
 public class UnityEmbodimentDemo
 {
 
@@ -39,6 +38,19 @@ public class UnityEmbodimentDemo
 
     public static void main(String[] args) throws IOException
     {
+    	Console.setEnabled(false);
+    	System.out.println("Args:");
+    	for (int a = 0; a<args.length; a++) {
+    		System.out.println("\tArg "+a+": "+args[a]);
+    	}
+
+        String spec = "unity_agentspec_uma.xml";
+    	if (args.length > 0) {
+    		spec = args[0];
+    	}
+    	
+    	System.out.println("Using Agentspec: "+spec);
+    	
         MixedAnimationEnvironment mae = new MixedAnimationEnvironment();
         final OdePhysicsEnvironment ope = new OdePhysicsEnvironment();
         WorldObjectEnvironment we = new WorldObjectEnvironment();
@@ -54,6 +66,7 @@ public class UnityEmbodimentDemo
         final AsapEnvironment ee = new AsapEnvironment();
         
         ClockDrivenCopyEnvironment ce = new ClockDrivenCopyEnvironment(1000 / 60);
+        //ClockDrivenCopyEnvironment ce = new ClockDrivenCopyEnvironment(1000 / 2);
 
         ce.init();
         ope.init();
@@ -72,7 +85,6 @@ public class UnityEmbodimentDemo
         ee.init(environments, ope.getPhysicsClock());
         ope.addPrePhysicsCopyListener(ee);
 
-        String spec = "unity_agentspec_uma.xml";
         ee.loadVirtualHuman("", spec, "AsapRealizer demo");
 
         ope.startPhysicsClock();
