@@ -96,19 +96,19 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
     private MPEG4Configuration currentConfig = new MPEG4Configuration();
     private CopyEnvironment ce = null;
     
-    //long t0;
-    //Connection connection;
-
+    private boolean useBinary = false;
+    
     private LinkedHashMap<String,Float> faceMorphTargets;
     private LinkedBlockingQueue<WorldObjectUpdate> objectUpdates;
 
     private WorldObjectEnvironment woe;
     
-    public UnityEmbodiment(String vhId, String loaderId, String specificMiddlewareLoader, Properties props, WorldObjectEnvironment woe, CopyEnvironment ce) {
+    public UnityEmbodiment(String vhId, String loaderId, String specificMiddlewareLoader, boolean useBinary, Properties props, WorldObjectEnvironment woe, CopyEnvironment ce) {
 		this.vhId = vhId;
 		this.loaderId = loaderId;
 		this.woe = woe;
 		this.ce = ce;
+		this.useBinary = useBinary;
     	msgbuf = new byte[32768]; // Buffer: ~100bones * (4bytes * (3pos + 4rot) + 255) = ~28300
     	objectUpdates = new LinkedBlockingQueue<WorldObjectUpdate>();
 		        
@@ -121,57 +121,6 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
     public boolean isConfigured() {
     	return configured;
     }
-    
-    // V1
-    public void RequestAgent(String id, String source) {
-    	log.info("Req: "+id);
-    	ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-    	DataOutputStream out = new DataOutputStream(byteStream);
-    	
-    	try {
-    		out.writeByte(MSG_TYPE_AGENT_REQ);
-    		out.writeBytes(id);
-    		out.writeByte((byte)0x00);
-    		out.writeBytes(source);
-    		out.writeByte((byte)0x00);
-			out.flush();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-
-		JsonNode value = object(JSON_MSG_BINARY,
-				object(JSON_MSG_BINARY_CONTENT, Base64.encode(byteStream.toByteArray()))
-			).end();
-		middleware.sendData(value);
-		
-    	try {
-			out.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-    	log.info("Sent AgentSpecRequest to Middleware.");
-    }
-	
-    // V2
-    public void SendAgentSpecRequest(String id, String source) {
-    	JsonNode msg = object(
-    			AUPROT_PROP_MSGTYPE,AUPROT_MSGTYPE_AGENTSPECREQUEST,
-    			AUPROT_PROP_AGENTID, id,
-    			AUPROT_PROP_SOURCE, source).end();
-
-		middleware.sendData(msg);
-    }
-    
-	String ParseString(ByteBuffer reader) {
-		String res = "";
-		while (true) {
-			byte b = reader.get();
-			if (b == 0x00) break;
-			else res += (char) b;
-		}
-		return res;
-	}
-
 
 	@Override
 	public synchronized void receiveData(JsonNode jn) {
@@ -196,47 +145,16 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 				break;
 			}
 		}
-		// Old Protocol
-		else if (jn.has(JSON_MSG_BINARY)) {
-			byte[] bytes = Base64.decode(jn.get(JSON_MSG_BINARY).get(JSON_MSG_BINARY_CONTENT).asText());
-			ByteBuffer reader = ByteBuffer.wrap(bytes);
-			reader.order(ByteOrder.LITTLE_ENDIAN);
-			
-			byte msgType = reader.get();
-			if (msgType == MSG_TYPE_AGENT_SPEC) {
-				ParseAgentSpec(reader);
-			}
-		} else if (jn.has(JSON_MSG_WORLDUPDATE)) {
-		    JsonNode objects = jn.get(JSON_MSG_WORLDUPDATE).get(JSON_MSG_WORLDUPDATE_CONTENT);
-		    Iterator<String> objectNames = objects.fieldNames();
-		    while (objectNames.hasNext()) {
-		        String objectName = objectNames.next();
-                byte[] bytes = Base64.decode(objects.get(objectName).asText());
-                float[] translation = ParseBinaryWorldObjectData(bytes);
-                try
-                {
-                    objectUpdates.put(new WorldObjectUpdate(objectName, translation));
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
-		    }
-		}
 	}
-    
-    float[] ParseBinaryWorldObjectData(byte[] bytes) {
-        ByteBuffer reader = ByteBuffer.wrap(bytes);
-        reader.order(ByteOrder.LITTLE_ENDIAN);
-        float x = reader.getFloat();
-        float y = reader.getFloat();
-        float z = reader.getFloat();
-        float qw = reader.getFloat();
-        float qx = reader.getFloat();
-        float qy = reader.getFloat();
-        float qz = reader.getFloat();
-        
-        return new float[] { x, y, z };
+
+    // V2
+    public void SendAgentSpecRequest(String id, String source) {
+    	JsonNode msg = object(
+    			AUPROT_PROP_MSGTYPE,AUPROT_MSGTYPE_AGENTSPECREQUEST,
+    			AUPROT_PROP_AGENTID, id,
+    			AUPROT_PROP_SOURCE, source).end();
+
+		middleware.sendData(msg);
     }
     
     // V2
@@ -323,64 +241,6 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 		configured = true;
         ce.addCopyEmbodiment(this);
     }
-    
-	void ParseAgentSpec(ByteBuffer reader) {
-		faceMorphTargets = new LinkedHashMap<String,Float>();
-		jointList = new ArrayList<VJoint>();
-		
-		log.info("reading agent spec (V1)");
-		
-		String id = ParseString(reader); // CHARS* SK_NAME
-		log.info("ID: "+id);
-		
-		int skBones = reader.getInt(); // INT32  BONES#
-		log.info("Bones: "+skBones);
-		
-		HashMap<String, VJoint> jointsLUT = new HashMap<String, VJoint>();
-		log.info("Parsing skeleton %s, with %d bones\n", id, skBones);
-		
-		for (int b = 0; b < skBones; b++) {
-			String bName = ParseString(reader);
-			String pName = ParseString(reader);
-            String hAnimName = ParseString(reader);
-			
-			float x = reader.getFloat();
-			float y = reader.getFloat();
-			float z = reader.getFloat();
-			float qw = reader.getFloat();
-			float qx = reader.getFloat();
-			float qy = reader.getFloat();
-			float qz = reader.getFloat();
-			VJoint current = new VJoint();
-			current.setName(bName);
-			current.setSid(hAnimName);
-			current.setId(bName); // could be prefixed by vhId to be "truly" unique?
-			current.setTranslation(x, y, z);
-			current.setRotation(qw, qx, qy, qz);
-			
-			if (pName.length() == 0) {
-				animationRoot = current;
-			} else {
-				jointsLUT.get(pName).addChild(current);
-			}
-			
-			jointList.add(current);
-			jointsLUT.put(bName, current);
-			log.info(String.format("    Bone %s, child of %s. HAnim: %s // [%.2f %.2f %.2f] [%.2f %.2f %.2f %.2f]", bName, pName, hAnimName, x,y,z,qw,qx,qy,qz));
-		}
-		
-
-		int fTargets = reader.getInt(); // INT32  BONES#
-
-		log.info("Face Targets: %d\n", fTargets);
-		for (int f = 0; f < fTargets; f++) {
-			String cName = ParseString(reader);
-			faceMorphTargets.put(cName, 0.0f);
-			log.info(String.format("    Face Target: %s\n", cName));
-		}
-		configured = true;
-        ce.addCopyEmbodiment(this);
-	}
 	
 	public VJoint getAnimationVJoint() {
         return animationRoot;
@@ -402,51 +262,13 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 	        }
 	    }
 	    
-	    if (false) {
-			ByteBuffer out = ByteBuffer.wrap(msgbuf);
-			out.order(ByteOrder.LITTLE_ENDIAN);
-			out.rewind();
-			out.put(MSG_TYPE_AGENT_STATE);
-	    	out.put(vhId.getBytes(StandardCharsets.US_ASCII));
-	    	out.put((byte)0x00);
-	    	
-	    	out.putInt(jointList.size());
-	    	for (int j = 0; j < jointList.size(); j++) {
-				VJoint cur = jointList.get(j);
-	    		float[] translation = new float[3];
-	    		float[] rotation = new float[4];
-				cur.getTranslation(translation);
-				cur.getRotation(rotation);
-				out.putFloat(translation[0]);
-				out.putFloat(translation[1]);
-				out.putFloat(translation[2]);
-				out.putFloat(rotation[0]);
-				out.putFloat(rotation[1]);
-				out.putFloat(rotation[2]);
-				out.putFloat(rotation[3]);
-	    	}
-	    	
-	    	if (faceMorphTargets == null) out.putInt(0);
-	    	else {
-	    		out.putInt(faceMorphTargets.size());
-	    		for (Map.Entry<String,Float> entry : faceMorphTargets.entrySet()) {
-	        		out.putFloat(entry.getValue());
-	            }
-	    	}
-			//DefaultMessage msg = new DefaultMessage(Arrays.copyOf(out.array(), out.position()));
-			//msg.setProperty("content-length", ""+out.position());
-	    	
-			JsonNode value = object(JSON_MSG_BINARY,
-					object(JSON_MSG_BINARY_CONTENT, Base64.encode(Arrays.copyOf(out.array(), out.position())))
-				).end();
-			middleware.sendData(value);
-	    } else {
-	    	ObjectNodeBuilder msgBuilder = object(AUPROT_PROP_MSGTYPE, AUPROT_MSGTYPE_AGENTSTATE);
-	    	msgBuilder.with(AUPROT_PROP_AGENTID, vhId);
-	    	msgBuilder.with(AUPROT_PROP_N_BONES, jointList.size());
-	    	msgBuilder.with(AUPROT_PROP_N_FACETARGETS, faceMorphTargets.size());
-	    	
+    	ObjectNodeBuilder msgBuilder = object(AUPROT_PROP_MSGTYPE, AUPROT_MSGTYPE_AGENTSTATE);
+    	msgBuilder.with(AUPROT_PROP_AGENTID, vhId);
+    	msgBuilder.with(AUPROT_PROP_N_BONES, jointList.size());
+    	msgBuilder.with(AUPROT_PROP_N_FACETARGETS, faceMorphTargets.size());
+    	
 
+    	if (!useBinary) {
 	    	ArrayNodeBuilder boneArrayBuilder = array();
 	    	for (int j = 0; j < jointList.size(); j++) {
 				VJoint cur = jointList.get(j);
@@ -468,17 +290,50 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 	    	}
 	    	
 	    	msgBuilder.with(AUPROT_PROP_BONE_VALUES, boneArrayBuilder.end());
-	    	
+    	} else {
+    		ByteBuffer out = ByteBuffer.wrap(msgbuf);
+			out.order(ByteOrder.LITTLE_ENDIAN);
+			out.rewind();
+
+			for (int j = 0; j < jointList.size(); j++) {
+				VJoint cur = jointList.get(j);
+	    		float[] translation = new float[3];
+	    		float[] rotation = new float[4];
+				cur.getTranslation(translation);
+				cur.getRotation(rotation);
+				out.putFloat(translation[0]);
+				out.putFloat(translation[1]);
+				out.putFloat(translation[2]);
+				out.putFloat(rotation[1]);
+				out.putFloat(rotation[2]);
+				out.putFloat(rotation[3]);
+				out.putFloat(rotation[0]);
+	    	}
+			
+    		msgBuilder.with(AUPROT_PROP_BINARY_BONE_VALUES, Base64.encode(Arrays.copyOf(out.array(), out.position())));
+    	}
+    	
+    	if (!useBinary) {
 	    	ArrayNodeBuilder faceTargetArrayBuilder = array();
 	    	for (Map.Entry<String,Float> entry : faceMorphTargets.entrySet()) {
 	    		faceTargetArrayBuilder.with(entry.getValue());
 	    		//faceTargetArrayBuilder.with(0.3f);
-            }
+	        }
 	    	msgBuilder.with(AUPROT_PROP_FACETARGET_VALUES, faceTargetArrayBuilder.end());
-	    	JsonNode msg = msgBuilder.end();
-			middleware.sendData(msg);
-	    }
-    	//connection.send(msg, "/topic/UnityAgentControl");
+    	} else {
+    		ByteBuffer out = ByteBuffer.wrap(msgbuf);
+			out.order(ByteOrder.LITTLE_ENDIAN);
+			out.rewind();
+			
+			for (Map.Entry<String,Float> entry : faceMorphTargets.entrySet()) {
+        		out.putFloat(entry.getValue());
+            }
+			
+    		msgBuilder.with(AUPROT_PROP_BINARY_FACETARGET_VALUES, Base64.encode(Arrays.copyOf(out.array(), out.position())));
+    	}
+    	
+    	JsonNode msg = msgBuilder.end();
+		middleware.sendData(msg);
 	}
 	
 	

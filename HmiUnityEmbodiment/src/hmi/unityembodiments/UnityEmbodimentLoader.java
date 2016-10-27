@@ -31,6 +31,7 @@ public class UnityEmbodimentLoader implements EmbodimentLoader
     public void readXML(XMLTokenizer tokenizer, String loaderId, String vhId, String vhName, Environment[] environments,
             Loader... requiredLoaders) throws IOException
     {
+    	boolean useBinary = true;
         WorldObjectEnvironment woe = null;
         CopyEnvironment ce = null;
         for (Environment e : environments)
@@ -69,7 +70,7 @@ public class UnityEmbodimentLoader implements EmbodimentLoader
             tokenizer.takeETag("MiddlewareProperty");
         }
 
-        ue = new UnityEmbodiment(vhId, loaderId, loaderclass, props, woe, ce);
+        ue = new UnityEmbodiment(vhId, loaderId, loaderclass, useBinary, props, woe, ce);
         while (!ue.isConfigured()) {
             ue.SendAgentSpecRequest(vhId, "/scene");
             try
