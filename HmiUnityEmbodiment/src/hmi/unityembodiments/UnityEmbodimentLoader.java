@@ -31,7 +31,7 @@ public class UnityEmbodimentLoader implements EmbodimentLoader
     public void readXML(XMLTokenizer tokenizer, String loaderId, String vhId, String vhName, Environment[] environments,
             Loader... requiredLoaders) throws IOException
     {
-    	boolean useBinary = true;
+    	boolean useBinary = false;
         WorldObjectEnvironment woe = null;
         CopyEnvironment ce = null;
         for (Environment e : environments)
