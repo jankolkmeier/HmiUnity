@@ -1,9 +1,4 @@
-<gesturebinding>
-  <RestGazeSpec>
-      <constraints>                    
-      </constraints>
-      <parametermap>
-	<parameter src="target" dst="target"/>
+<gesturebinding> <RestGazeSpec> <constraints>                    </constraints> <parametermap> <parameter src="target" dst="target"/>
 	<parameter src="influence" dst="influence"/>
 	<parameter src="offsetDirection" dst="offsetdirection"/>
 	<parameter src="offsetAngle" dst="offsetangle"/>
