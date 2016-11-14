@@ -79,7 +79,6 @@
 
 
 		<dependency org="marytts" name="voice-dfki-prudence-hsmm"       rev="latest.release"  />
-		<!--
 		<dependency org="marytts" name="voice-dfki-poppy-hsmm"       rev="latest.release"  />
 		<dependency org="marytts" name="voice-dfki-pavoque-neutral-hsmm"       rev="latest.release"  />
 		<dependency org="marytts" name="voice-bits1-hsmm"       rev="latest.release"  />	
@@ -94,7 +93,6 @@
 		<dependency org="marytts" name="voice-cmu-bdl-hsmm"       rev="latest.release"  />
 		<dependency org="marytts" name="voice-cmu-rms-hsmm"       rev="latest.release"  />
 		<dependency org="marytts" name="voice-cmu-slt-hsmm"       rev="latest.release"  />
-		-->
 	
 	</dependencies>
 </ivy-module>
