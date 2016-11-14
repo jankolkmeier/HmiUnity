@@ -71,11 +71,12 @@ public class UnityEmbodimentLoader implements EmbodimentLoader
         }
 
         ue = new UnityEmbodiment(vhId, loaderId, loaderclass, useBinary, props, woe, ce);
+        System.out.println("Waiting for AgentSpec...");
         while (!ue.isConfigured()) {
             ue.SendAgentSpecRequest(vhId, "/scene");
             try
             {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             }
             catch (InterruptedException e1)
             {

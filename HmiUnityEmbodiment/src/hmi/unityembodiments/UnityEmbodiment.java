@@ -74,6 +74,10 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 	public static final String AUPROT_PROP_BINARY_FACETARGET_VALUES = "binaryFaceTargetValues";
 	public static final String AUPROT_PROP_OBJECTS = "objects";
 	public static final String AUPROT_PROP_OBJECTS_BINARY = "objectsBinary";
+
+	public static final String AUPROT_PROP_STATE = "state";
+	public static final String AUPROT_MESSAGE_APPLICATION_STATE = "ApplicationState";
+	public static final String AUPROT_PROP_MESSAGE = "message";
 	
 	public static final String AUPROT_PROP_BONE_ID = "boneId";
 	public static final String AUPROT_PROP_BONE_PARENTID = "parentId";
