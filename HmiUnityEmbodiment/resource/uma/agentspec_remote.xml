@@ -89,26 +89,35 @@
   </Loader>
   
   <Loader id="facelipsync" requiredloaders="faceengine" loader="asap.faceengine.loader.TimedFaceUnitLipSynchProviderLoader">
-      <MorphVisemeBinding resources="uma/face/" filename="visemebinding.xml"/>
+      <MorphVisemeBinding resources="uma/face/" filename="visemebinding_disney.xml"/>
   </Loader>
 
-  <!--
+<!--
+     If uing this, add visualprosody to the  requiredloaders of speechengine!
   <Loader id="visualprosody" loader="asap.animationengine.loader.HeadVisualProsodyProviderLoader" requiredloaders="animationengine">
 	<?include resources="" file="visualprosodyprovider.xml"?>
   </Loader>
 -->
 
-
   <Loader id="ttsbinding" loader="asap.marytts5binding.loader.MaryTTSBindingLoader">
-      <PhonemeToVisemeMapping resources="shared/face/phoneme2viseme/" filename="sampade2ikp.xml"/>
+    <PhonemeToVisemeMapping resources="shared/face/phoneme2viseme/" filename="sampaen2disney.xml"/>
   </Loader>
+  <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding,guiembodiment">
+    <Voice factory="WAV_TTS" voicename="dfki-prudence-hsmm" />
+    <SpeechUI/>
+  </Loader>
+
+<!-- FLUENCY TTS -
+  <Loader id="ttsbinding" loader="asap.fluencyttsbinding.loader.FluencyTTSBindingLoader">
+    <PhonemeToVisemeMapping resources="shared/face/phoneme2viseme" filename="fluency2disney.xml"/>
+  </Loader>
+  <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding,guiembodiment">
+    <Voice factory="WAV_TTS" voicename="Arthur"/>	
+    <SpeechUI/>
+  </Loader>
+- /FLUENCY TTS -->
   
   
-<!-- visualprosody, -->
- <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding,guiembodiment">
-   <Voice factory="WAV_TTS" voicename="dfki-prudence-hsmm" />
-   <SpeechUI/>
-  </Loader>
 
   <!-- Breathingemitter that sens small breathing animations every now and then -->
   <Loader id="breathingengine" 
