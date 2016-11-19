@@ -3,9 +3,12 @@
      fluency: http://www.fluency.nl/help/lexicon.htm
      disney: DisneyVisemes.java
      -->
+    <phoneme viseme="0" phoneme=" "/>
     <phoneme viseme="0" phoneme="."/>
     <phoneme viseme="0" phoneme="$"/>
     <phoneme viseme="0" phoneme="/"/>
+    <phoneme viseme="0" phoneme="//"/>
+    <phoneme viseme="0" phoneme="///"/>
     <phoneme viseme="21" phoneme="p"/>
     <phoneme viseme="21" phoneme="b"/>
     <phoneme viseme="1" phoneme="t"/>
