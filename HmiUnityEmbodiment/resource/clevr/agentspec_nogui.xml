@@ -58,7 +58,7 @@
 <!-- MARY TTS -->
   <Loader id="ttsbinding" loader="asap.marytts5binding.loader.MaryTTSBindingLoader">
 	<!-- maps the phoneme output of a TTS to a set of visemes -->
-    <PhonemeToVisemeMapping resources="clevr/face/phoneme2viseme" filename="sampaen2disney.xml"/>
+    <PhonemeToVisemeMapping resources="shared/face/phoneme2viseme" filename="sampaen2disney.xml"/>
   </Loader>
 
   <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding">
@@ -67,7 +67,7 @@
 <!-- /MARY TTS -->
 <!-- FLUENCY TTS -
   <Loader id="ttsbinding" loader="asap.fluencyttsbinding.loader.FluencyTTSBindingLoader">
-    <PhonemeToVisemeMapping resources="clevr/face/phoneme2viseme" filename="fluency2disney.xml"/>
+    <PhonemeToVisemeMapping resources="shared/face/phoneme2viseme" filename="fluency2disney.xml"/>
   </Loader>
 
   <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding">
