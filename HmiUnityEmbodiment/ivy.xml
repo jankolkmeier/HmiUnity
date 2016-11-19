@@ -8,9 +8,7 @@
 		<dependency org="Asap"   name="AsapSapi5TTSBinding" rev="latest.${resolve.status}"   />
 		<dependency org="HMI"      name="HmiTTSSapi5"         rev="latest.${resolve.status}"  />
 		<dependency org="HMI"     name="HmiTTSnative" rev="latest.release"  />      
-
 		<dependency org="HMI"   name="HmiJComponentEnvironment"     rev="latest.${resolve.status}"   />    
-
 		<dependency org="HMI"      name="HmiTTSMary5"         rev="latest.${resolve.status}"  />
 
 		<dependency org="HMI"   name="HmiGraphics"     rev="latest.${resolve.status}"   />    
@@ -22,10 +20,12 @@
 		<dependency org="HMI"   name="HmiTextEmbodiments"     rev="latest.${resolve.status}"   />    
 
         <!-- 
+		<dependency org="HMI"   name="HmiPhysics"     rev="latest.${resolve.status}"   />    
 		<dependency org="HMI"   name="HmiPhysicsEmbodiments"     rev="latest.${resolve.status}"   />    
-        <dependency org="HMI"   name="HmiAnimationEmbodiments"     rev="latest.${resolve.status}"   />    
 		<dependency org="HMI"   name="HmiPhysicsEnvironment"     rev="latest.${resolve.status}"   />    
+        <dependency org="HMI"   name="HmiAnimationEmbodiments"     rev="latest.${resolve.status}"   />    
 		<dependency org="Asap"   name="AsapAnimationEngine"     rev="latest.${resolve.status}"   />    
+		<dependency org="Asap"   name="AsapMiddlewareEngine"     rev="latest.${resolve.status}"   />    
              -->
 
 		<dependency org="HMI"   name="HmiMixedAnimationEnvironment"     rev="latest.${resolve.status}"   />    
