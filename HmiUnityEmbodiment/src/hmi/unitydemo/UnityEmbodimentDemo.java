@@ -44,7 +44,7 @@ public class UnityEmbodimentDemo
     		System.out.println("\tArg "+a+": "+args[a]);
     	}
 
-        String spec = "unity_agentspec_uma.xml";
+        String spec = "uma/agentspec.xml";
     	if (args.length > 0) {
     		spec = args[0];
     	}
@@ -65,7 +65,7 @@ public class UnityEmbodimentDemo
         final JComponentEnvironment jce = setupJComponentEnvironment();
         final AsapEnvironment ee = new AsapEnvironment();
         
-        ClockDrivenCopyEnvironment ce = new ClockDrivenCopyEnvironment(1000 / 60);
+        ClockDrivenCopyEnvironment ce = new ClockDrivenCopyEnvironment(1000 / 25);
         //ClockDrivenCopyEnvironment ce = new ClockDrivenCopyEnvironment(1000 / 2);
 
         ce.init();
