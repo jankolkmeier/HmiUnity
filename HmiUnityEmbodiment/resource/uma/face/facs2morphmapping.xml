@@ -65,5 +65,3 @@
    <Map AU="64" side="LEFT"  morph="FACS_AU_64_L" intensity="1.0" /> <!-- Eyes down -->
    <Map AU="64" side="RIGHT" morph="FACS_AU_64_R" intensity="1.0" />
 </FACS2MorphMapping>
-
-

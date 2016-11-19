@@ -54,7 +54,7 @@
 		</parametermap>
 		<parameterdefaults>
 		</parameterdefaults>
-		<FaceUnit type="AU2Morph" facs2morphmappingresources="" facs2morphmappingfilename="unity_facs2morphmapping.xml" />
+        <FaceUnit type="AU2Morph" facs2morphmappingresources="uma/face/" facs2morphmappingfilename="facs2morphmapping.xml" />
 	</FaceUnitSpec>
 	
 	<FaceUnitSpec type="faceLexeme">
@@ -96,7 +96,7 @@
 		<parameterdefaults>
 			<parameterdefault name="intensity" value="1"/>
 		</parameterdefaults>
-		<FaceUnit type="FACS2Morph" filename="faceexpressions/think.xml"/>
+        <FaceUnit type="FACS2Morph" filename="shared/faceexpressions/think.xml"/>
 	</FaceUnitSpec>
 	
 	<FaceUnitSpec type="faceLexeme">
@@ -109,7 +109,7 @@
 		<parameterdefaults>
 			<parameterdefault name="intensity" value="1"/>
 		</parameterdefaults>
-		<FaceUnit type="FACS2Morph" filename="faceexpressions/ask.xml"/>
+        <FaceUnit type="FACS2Morph" filename="shared/faceexpressions/ask.xml"/>
 	</FaceUnitSpec>
 	
 	<FaceUnitSpec type="faceLexeme">
@@ -122,7 +122,7 @@
 		<parameterdefaults>
 			<parameterdefault name="intensity" value="1"/>
 		</parameterdefaults>
-		<FaceUnit type="FACS2Morph" filename="faceexpressions/expectingbrows.xml"/>
+        <FaceUnit type="FACS2Morph" filename="shared/faceexpressions/expectingbrows.xml"/>
 	</FaceUnitSpec>
 	
 	<FaceUnitSpec type="faceLexeme">
@@ -135,7 +135,7 @@
 		<parameterdefaults>
 			<parameterdefault name="intensity" value="1"/>
 		</parameterdefaults>
-		<FaceUnit type="FACS2Morph" filename="faceexpressions/questioning.xml"/>
+        <FaceUnit type="FACS2Morph" filename="shared/faceexpressions/questioning.xml"/>
 	</FaceUnitSpec>
 	
 	
@@ -149,7 +149,7 @@
 		<parameterdefaults>
 			<parameterdefault name="intensity" value="1"/>
 		</parameterdefaults>
-		<FaceUnit type="FACS2Morph" filename="faceexpressions/sip.xml"/>
+        <FaceUnit type="FACS2Morph" filename="shared/faceexpressions/sip.xml"/>
 	</FaceUnitSpec>
 	
 	<FaceUnitSpec type="faceLexeme">
@@ -162,7 +162,7 @@
 		<parameterdefaults>
 			<parameterdefault name="intensity" value="1"/>
 		</parameterdefaults>
-		<FaceUnit type="FACS2Morph" filename="faceexpressions/smile.xml"/>
+        <FaceUnit type="FACS2Morph" filename="shared/faceexpressions/smile.xml"/>
 	</FaceUnitSpec>
 	
 	<FaceUnitSpec type="faceLexeme">
@@ -175,7 +175,7 @@
 		<parameterdefaults>
 			<parameterdefault name="intensity" value="1"/>
 		</parameterdefaults>
-		<FaceUnit type="FACS2Morph" filename="faceexpressions/smileeyes.xml"/>
+        <FaceUnit type="FACS2Morph" filename="shared/faceexpressions/smileeyes.xml"/>
 	</FaceUnitSpec>
 	
 	
