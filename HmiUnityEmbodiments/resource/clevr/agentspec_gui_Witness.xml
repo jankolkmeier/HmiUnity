@@ -17,6 +17,11 @@
     </PipeLoader>
   </Loader>
   
+  <Loader id="guiembodiment" loader="asap.realizerembodiments.JFrameEmbodiment">
+    <BmlUI demoscriptresources="clevr/testbml"/>
+    <FeedbackUI/>    
+  </Loader>
+
   <Loader id="middlewareembodiment" loader="asap.middlewareengine.embodiment.MiddlewareEmbodiment" requiredloaders="">
 	<!-- This is for behavior (gaze, gestures) that is controlled by CleVR in unity: -->
     <MiddlewareOptions loaderclass="nl.utwente.hmi.middleware.stomp.STOMPMiddlewareLoader">
@@ -60,18 +65,20 @@
     <PhonemeToVisemeMapping resources="shared/face/phoneme2viseme" filename="sampaen2disney.xml"/>
   </Loader>
 
-  <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding">
+  <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding,guiembodiment">
     <Voice factory="WAV_TTS" voicename="cmu-rms-hsmm" />
+    <SpeechUI/>
   </Loader>
-/MARY TTS -->
+ /MARY TTS -->
 <!-- FLUENCY TTS -
 - /FLUENCY TTS -->
   <Loader id="ttsbinding" loader="asap.fluencyttsbinding.loader.FluencyTTSBindingLoader">
     <PhonemeToVisemeMapping resources="shared/face/phoneme2viseme" filename="fluency2disney.xml"/>
   </Loader>
 
-  <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding">
+  <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding,guiembodiment">
     <Voice factory="WAV_TTS" voicename="Arthur"/>	
+    <SpeechUI/>
   </Loader>
 
 <!--

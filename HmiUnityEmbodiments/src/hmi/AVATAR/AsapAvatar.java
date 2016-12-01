@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import asap.bml.ext.bmlt.BMLTInfo;
 import asap.environment.AsapEnvironment;
+import asap.environment.AsapVirtualHuman;
 import hmi.AVATAR.AvatarStatusThread.Status;
 import hmi.audioenvironment.AudioEnvironment;
 import hmi.environmentbase.ClockDrivenCopyEnvironment;
@@ -40,10 +42,11 @@ public class AsapAvatar
 	public Status status;
     public ArrayList<Environment> environments;
     String spec;
+    String mode;
     
-    public AsapAvatar(String spec)
+    public AsapAvatar(String mode)
     {
-    	this.spec = spec;
+    	this.mode = mode;
     	this.status = Status.STARTING;
     }
 
@@ -80,8 +83,10 @@ public class AsapAvatar
         ope.addPrePhysicsCopyListener(ee);
 
     	status = Status.WAITING_FOR_AGENTSPEC; 
-        ee.loadVirtualHuman("", spec, "AsapRealizer demo");
+        AsapVirtualHuman avh = ee.loadVirtualHuman("", spec, "AsapRealizer demo");
         ope.startPhysicsClock();
+        avh.getRealizerPort().performBML("<bml xmlns=\"http://www.bml-initiative.org/bml/bml-1.0\" id=\"bml1\"><speech id=\"speech0\" start=\"0.2\"><text>Hi</text></speech></bml>");
+
     }
     
     public void InitGui() throws IOException {
@@ -120,7 +125,7 @@ public class AsapAvatar
         ope.addPrePhysicsCopyListener(ee);
 
     	status = Status.WAITING_FOR_AGENTSPEC; 
-        ee.loadVirtualHuman("", spec, "AsapRealizer demo");
+        AsapVirtualHuman avh = ee.loadVirtualHuman("", spec, "AsapRealizer demo");
         ope.startPhysicsClock();
 
         mainJFrame.addWindowListener(new java.awt.event.WindowAdapter()
@@ -133,6 +138,24 @@ public class AsapAvatar
 
         mainJFrame.setSize(1000, 600);
         mainJFrame.setVisible(true);
+        
+        avh.getRealizerPort().performBML("<bml xmlns=\"http://www.bml-initiative.org/bml/bml-1.0\" id=\"bml1\"><speech id=\"speech0\" start=\"0.2\"><text>Hi</text></speech></bml>");
+
+    }
+    
+    public void Init(String scenario) {
+    	this.spec = "clevr/agentspec_"+mode+"_"+scenario+".xml";
+		System.out.println("\tUsing spec "+spec);
+    	try {
+	    	if (mode.equals("nogui")) {
+					InitNoGui();
+	    	} else {
+	        	InitGui();
+	    	}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	this.status = Status.RUNNING;
     }
     
     public static void main(String[] args) throws IOException
@@ -142,28 +165,23 @@ public class AsapAvatar
     	for (int a = 0; a<args.length; a++) {
     		System.out.println("\tArg "+a+": "+args[a]);
     	}
+    	
     	String mode = "gui";
-        String spec = "clevr/agentspec.xml";
         
     	if (args.length > 0) {
     		mode = args[0];
     	}
     	
-    	if (mode.equals("nogui")) {
-            spec = "clevr/agentspec_nogui.xml";
-    	}
-    	
-    	
-    	AsapAvatar aa = new AsapAvatar(spec);
+    	AsapAvatar aa = new AsapAvatar(mode);
     	AvatarStatusThread ast = new AvatarStatusThread(aa);
     	ast.start();
     	
+    	/*
     	if (mode.equals("nogui")) {
         	aa.InitNoGui();
     	} else {
         	aa.InitGui();
-    	}
-    	aa.status = Status.RUNNING;
+    	}*/
     	/*
     	while (ast.) {
     		/// handle restart, stop, etc...

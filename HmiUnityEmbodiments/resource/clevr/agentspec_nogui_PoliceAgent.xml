@@ -71,7 +71,7 @@
   </Loader>
 
   <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding">
-    <Voice factory="WAV_TTS" voicename="Arthur"/>	
+    <Voice factory="WAV_TTS" voicename="Marco"/>	
   </Loader>
 
 <!--

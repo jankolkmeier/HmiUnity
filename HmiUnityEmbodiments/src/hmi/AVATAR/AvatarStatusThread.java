@@ -35,7 +35,7 @@ public class AvatarStatusThread extends Thread implements MiddlewareListener {
 	}
 	
     public void run() {
-    	STOMPMiddleware middleware = new STOMPMiddleware("127.0.0.1", 61613, "/topic/CleVRFeedback", "/topic/AsapState");
+    	STOMPMiddleware middleware = new STOMPMiddleware("127.0.0.1", 61613, "/topic/CleVRCmdFeedback", "/topic/AsapState");
     	middleware.addListener(this);
     	
     	long lastExecution = 0;
@@ -68,7 +68,15 @@ public class AvatarStatusThread extends Thread implements MiddlewareListener {
 
 	@Override
 	public void receiveData(JsonNode jn) {
-		System.out.println("/topic/CleVRFeedback: "+jn.toString());
+		System.out.println("/topic/CleVRCmdFeedback: "+jn.toString());
+
+		if (jn.has("msgType") && jn.get("msgType").asText().equals("StopScenario")) {
+		      System.exit(0);
+		}
+		
+		if (jn.has("msgType") && jn.get("msgType").asText().equals("StartScenario")) {
+			aa.Init(jn.get("scenarioId").asText());
+		}
 		// could handle stopping/restarting here...
 	}
 
