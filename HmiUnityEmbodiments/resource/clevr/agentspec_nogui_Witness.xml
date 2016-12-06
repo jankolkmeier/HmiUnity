@@ -55,6 +55,9 @@
 	<MorphVisemeBinding resources="clevr/face" filename="visemebinding.xml"/>
   </Loader>
   
+  <Loader id="clevrsubtitles" loader="hmi.AVATAR.CleVRSubtitlesLoader" requiredloaders="middlewareembodiment" />
+  <Loader id="textengine" loader="asap.textengine.loader.TextEngineLoader" requiredloaders="clevrsubtitles" />
+  <Loader id="subtitles" requiredloaders="textengine" loader="asap.textengine.loader.TimedSpeechTextUnitLipSynchProviderLoader" />
 <!-- MARY TTS 
   <Loader id="ttsbinding" loader="asap.marytts5binding.loader.MaryTTSBindingLoader">
     <PhonemeToVisemeMapping resources="shared/face/phoneme2viseme" filename="sampaen2disney.xml"/>
@@ -70,7 +73,7 @@
     <PhonemeToVisemeMapping resources="shared/face/phoneme2viseme" filename="fluency2disney.xml"/>
   </Loader>
 
-  <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,ttsbinding">
+  <Loader id="speechengine" loader="asap.speechengine.loader.SpeechEngineLoader" requiredloaders="facelipsync,subtitles,ttsbinding">
     <Voice factory="WAV_TTS" voicename="Arthur"/>	
   </Loader>
 
