@@ -43,9 +43,10 @@ import nl.utwente.hmi.middleware.MiddlewareListener;
 import nl.utwente.hmi.middleware.helpers.JsonNodeBuilders.ArrayNodeBuilder;
 import nl.utwente.hmi.middleware.helpers.JsonNodeBuilders.ObjectNodeBuilder;
 import nl.utwente.hmi.middleware.loader.GenericMiddlewareLoader;
+import nl.utwente.hmi.middleware.worker.AbstractWorker;
 
 @Slf4j
-public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, FaceEmbodiment, BodyAndFaceEmbodiment, FaceController, FACSFaceEmbodiment {
+public class UnityEmbodiment extends AbstractWorker implements MiddlewareListener, SkeletonEmbodiment, FaceEmbodiment, BodyAndFaceEmbodiment, FaceController, FACSFaceEmbodiment  {
 	
 	private Middleware middleware;
 	
@@ -84,11 +85,14 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 	public static final String AUPROT_PROP_BONE_HANIMNAME = "hAnimName";
 	public static final String AUPROT_PROP_TRANSFORM = "transform";
 	public static final String AUPROT_PROP_OBJECT_ID = "objectId";
+	public static final String AUPROT_PROP_SUBTITLE = "subtitle";
 	
 	public static final String AUPROT_MSGTYPE_AGENTSPECREQUEST = "AgentSpecRequest";
 	public static final String AUPROT_MSGTYPE_AGENTSPEC = "AgentSpec";
 	public static final String AUPROT_MSGTYPE_AGENTSTATE = "AgentState";
 	public static final String AUPROT_MSGTYPE_WORLDOBJECTUPDATE = "WorldObjectUpdate";
+	public static final String AUPROT_MSGTYPE_SHOWSUBTITLES = "ShowSubtitle";
+	public static final String AUPROT_MSGTYPE_HIDESUBTITLES = "HideSubtitle";
 	
 	byte[] msgbuf;
 	private VJoint animationRoot = null;
@@ -340,7 +344,6 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 		middleware.sendData(msg);
 	}
 	
-	
 
     public static float round(float number, int scale) {
         int pow = 10;
@@ -431,6 +434,12 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 	@Override
 	public String getId() {
 		return loaderId;
+	}
+
+	@Override
+	public void processData(JsonNode jn) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
