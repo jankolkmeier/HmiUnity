@@ -4,12 +4,8 @@ import static nl.utwente.hmi.middleware.helpers.JsonNodeBuilders.array;
 import static nl.utwente.hmi.middleware.helpers.JsonNodeBuilders.object;
 
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,9 +39,10 @@ import nl.utwente.hmi.middleware.MiddlewareListener;
 import nl.utwente.hmi.middleware.helpers.JsonNodeBuilders.ArrayNodeBuilder;
 import nl.utwente.hmi.middleware.helpers.JsonNodeBuilders.ObjectNodeBuilder;
 import nl.utwente.hmi.middleware.loader.GenericMiddlewareLoader;
+import nl.utwente.hmi.middleware.worker.AbstractWorker;
 
 @Slf4j
-public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, FaceEmbodiment, BodyAndFaceEmbodiment, FaceController, FACSFaceEmbodiment {
+public class UnityEmbodiment extends AbstractWorker implements MiddlewareListener, SkeletonEmbodiment, FaceEmbodiment, BodyAndFaceEmbodiment, FaceController, FACSFaceEmbodiment {
 	
 	private Middleware middleware;
 	
@@ -59,7 +56,6 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 	public static final String JSON_MSG_BINARY_CONTENT = "content";
 	
 
-	// V2 Protocol Spec Constants
 	public static final String AUPROT_PROP_MSGTYPE = "msgType";
 	public static final String AUPROT_PROP_AGENTID = "agentId";
 	public static final String AUPROT_PROP_SOURCE = "source";
@@ -120,6 +116,7 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
         middleware = gml.load();
         middleware.addListener(this);
         configured = false;
+        (new Thread(this)).start();
     }
     
     public boolean isConfigured() {
@@ -127,11 +124,14 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
     }
 
 	@Override
-	public synchronized void receiveData(JsonNode jn) {
-		// Protocol V2
+	public void receiveData(JsonNode jn) {
+		addDataToQueue(jn);
+	}
+	
+	@Override
+	public void processData(JsonNode jn) {
 		if (jn.has(AUPROT_PROP_MSGTYPE)) {
 			String msgType = jn.get(AUPROT_PROP_MSGTYPE).asText();
-			
 			switch(msgType) {
 			// Description of a Virtual Human
 			case AUPROT_MSGTYPE_AGENTSPEC:
@@ -150,8 +150,7 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 			}
 		}
 	}
-
-    // V2
+	
     public void SendAgentSpecRequest(String id, String source) {
     	JsonNode msg = object(
     			AUPROT_PROP_MSGTYPE,AUPROT_MSGTYPE_AGENTSPECREQUEST,
@@ -161,7 +160,6 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
 		middleware.sendData(msg);
     }
     
-    // V2
     void ParseWorldObjectUpdate(JsonNode jn) {
 	    int nObjects = jn.get(AUPROT_PROP_N_OBJECTS).asInt();
 
@@ -186,8 +184,7 @@ public class UnityEmbodiment implements MiddlewareListener, SkeletonEmbodiment, 
             }
 		}
     }
-
-    // V2
+    
     void ParseAgentSpec(JsonNode jn) {
 		log.info("reading agent spec (V2)");
 
