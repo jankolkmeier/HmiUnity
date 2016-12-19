@@ -71,7 +71,7 @@
         <parametermap>
         </parametermap>
         <parameterdefaults>
-            <parameterdefault name="name" value="oNodYes"/>
+            <parameterdefault name="name" value="uaNodYes"/>
             <parameterdefault name="filename" value="playAction.json"/>
             <parameterdefault name="resource" value="clevr/gestures/templates"/>
             <parameterdefault name="vhId" value="CleVR"/>

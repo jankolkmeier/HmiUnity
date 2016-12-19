@@ -80,11 +80,14 @@ public class UnityEmbodiment extends AbstractWorker implements MiddlewareListene
 	public static final String AUPROT_PROP_BONE_HANIMNAME = "hAnimName";
 	public static final String AUPROT_PROP_TRANSFORM = "transform";
 	public static final String AUPROT_PROP_OBJECT_ID = "objectId";
+	public static final String AUPROT_PROP_SUBTITLE = "subtitle";
 	
 	public static final String AUPROT_MSGTYPE_AGENTSPECREQUEST = "AgentSpecRequest";
 	public static final String AUPROT_MSGTYPE_AGENTSPEC = "AgentSpec";
 	public static final String AUPROT_MSGTYPE_AGENTSTATE = "AgentState";
 	public static final String AUPROT_MSGTYPE_WORLDOBJECTUPDATE = "WorldObjectUpdate";
+	public static final String AUPROT_MSGTYPE_SHOWSUBTITLES = "ShowSubtitle";
+	public static final String AUPROT_MSGTYPE_HIDESUBTITLES = "HideSubtitle";
 	
 	byte[] msgbuf;
 	private VJoint animationRoot = null;
@@ -337,7 +340,6 @@ public class UnityEmbodiment extends AbstractWorker implements MiddlewareListene
 		middleware.sendData(msg);
 	}
 	
-	
 
     public static float round(float number, int scale) {
         int pow = 10;
@@ -428,6 +430,12 @@ public class UnityEmbodiment extends AbstractWorker implements MiddlewareListene
 	@Override
 	public String getId() {
 		return loaderId;
+	}
+
+	@Override
+	public void processData(JsonNode jn) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
