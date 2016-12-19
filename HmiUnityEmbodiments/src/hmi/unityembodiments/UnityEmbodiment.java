@@ -431,11 +431,4 @@ public class UnityEmbodiment extends AbstractWorker implements MiddlewareListene
 	public String getId() {
 		return loaderId;
 	}
-
-	@Override
-	public void processData(JsonNode jn) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }
