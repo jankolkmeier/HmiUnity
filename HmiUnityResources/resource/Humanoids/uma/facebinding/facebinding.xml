@@ -55,8 +55,6 @@
 		<FaceUnit type="Morph"/>
 	</FaceUnitSpec>
 
-<!-- AU2Morph & FACS2Morph FaceUnits not upstream yet.
-
 	<FaceUnitSpec type="faceFacs"  namespace="http://www.bml-initiative.org/bml/coreextensions-1.0">
 		<constraints>			
 		</constraints>
@@ -161,7 +159,6 @@
 		</parameterdefaults>
         <FaceUnit type="FACS2Morph" filename="Humanoids/shared/faceexpressions/smileeyes.xml"/>
 	</FaceUnitSpec>
-    -->
 
     <!--
 	<FaceUnitSpec type="faceLexeme">
