@@ -1,0 +1,8 @@
+<SkeletonPose encoding="T1R" rotationEncoding="quaternions" parts="HumanoidRoot vl5">
+	1 1 0.5 
+	-0.906 0.0 0.423 0.0
+	-1.0   0.0 0.0   0.0
+</SkeletonPose>
+<!-- 
+ROOT2 50 deg on root, 0 on vl5
+ -->
